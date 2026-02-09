@@ -1,5 +1,11 @@
 // system_monitor.v
 
+// Note for conversion between raw ADC values and actual volts:
+// According to the MCU fpga_rx.c the voltage for a raw value 'a' is
+//   V(a) = (10+2.2) * (a/2048)/2.2 - 0.1
+// Therefore the raw value for a voltage V is
+//   g(V) = (V + 0.1)*2.2/(10+2.2) * 2048
+
 module system_monitor(
     input               appear_off,
     input               clk,
@@ -115,15 +121,15 @@ module system_monitor(
     // Original warning values retain pre-v18.9 behavior. V2 values use
     // the MCU voltage conversion to match the same battery-bar levels.
     // Red LED and low-battery icon: approximately 20% AA / 17% LiPo.
-    localparam [13:0] LOW_BATTERY_AA_ADC   = 14'd1071;
+    localparam [13:0] LOW_BATTERY_AA_ADC   = 14'd1252;
     localparam [13:0] LOW_BATTERY_LIPO_ADC = 14'd1182;
     localparam [13:0] LOW_BATTERY_AA_ADC_V2      = 14'd1118;
     localparam [13:0] LOW_BATTERY_LIPO_ADC_V2    = 14'd1238;
 
     // AA power-save entry and recovery; V2 matches the original meter levels.
     // Separate recovery threshold prevents toggling near the entry threshold.
-    localparam [13:0] POWER_SAVE_ENTER_ADC = 14'd979;
-    localparam [13:0] POWER_SAVE_EXIT_ADC  = 14'd1293;
+    localparam [13:0] POWER_SAVE_ENTER_ADC = 14'd1219;
+    localparam [13:0] POWER_SAVE_EXIT_ADC  = 14'd1308;
     localparam [13:0] POWER_SAVE_ENTER_ADC_V2    = 14'd1019;
     localparam [13:0] POWER_SAVE_EXIT_ADC_V2     = 14'd1357;
 
